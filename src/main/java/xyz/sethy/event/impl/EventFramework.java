@@ -2,6 +2,7 @@ package xyz.sethy.event.impl;
 
 import xyz.sethy.event.Event;
 import xyz.sethy.event.Framework;
+import xyz.sethy.event.comparator.IntegerComparator;
 
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -19,7 +20,7 @@ public class EventFramework implements Framework
     public EventFramework()
     {
         this.maxThreads = new AtomicInteger(2);
-        this.events = new PriorityQueue<>();
+        this.events = new PriorityQueue<>(new IntegerComparator());
 
         ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
         service.scheduleAtFixedRate(new EventTask(), 1, 20, TimeUnit.MILLISECONDS);
