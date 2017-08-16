@@ -1,10 +1,16 @@
 package xyz.sethy.event;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Logger;
 
 public abstract class EventAPI
 {
     private static Framework framework;
+
+    private EventAPI() throws IllegalAccessException
+    {
+        throw new IllegalAccessException("Utility class");
+    }
 
     /**
      * Set the EventFramework, this should be called before the application is run.
@@ -32,5 +38,10 @@ public abstract class EventAPI
             e.printStackTrace();
         }
         return new AtomicBoolean(false);
+    }
+
+    public static synchronized Logger getLogger()
+    {
+        return framework.getLogger();
     }
 }

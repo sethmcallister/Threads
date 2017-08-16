@@ -2,6 +2,7 @@ package xyz.sethy.event;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
 
 public interface Framework
 {
@@ -21,4 +22,6 @@ public interface Framework
      * @return the max amount of threads that this system will use.
      */
     AtomicInteger getMaxThreads();
+
+    Logger getLogger();
 }

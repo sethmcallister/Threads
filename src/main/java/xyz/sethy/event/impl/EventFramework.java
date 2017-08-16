@@ -11,16 +11,19 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
 
 public class EventFramework implements Framework
 {
     private final AtomicInteger maxThreads;
     private final Queue<Event> events;
+    private final Logger logger;
 
     public EventFramework()
     {
         this.maxThreads = new AtomicInteger(2);
-        this.events = new PriorityQueue<>(new IntegerComparator());
+        this.events = new PriorityQueue<>();
+        this.logger = Logger.getLogger("Events");
 
         ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
         service.scheduleAtFixedRate(new EventTask(), 1, 20, TimeUnit.MILLISECONDS);
@@ -51,6 +54,12 @@ public class EventFramework implements Framework
         return maxThreads;
     }
 
+    @Override
+    public Logger getLogger()
+    {
+        return logger;
+    }
+
     public class EventTask implements Runnable
     {
 
@@ -61,13 +70,10 @@ public class EventFramework implements Framework
             while(!events.isEmpty() && i <= getMaxThreads().get())
             {
                 Event event = events.poll();
-                if(event.getCancelled().get())
+                if(event.getCancelled().get() || event.getExecuted().get())
                     continue;
 
-                if(event.getExecuted().get())
-                    continue;
-
-                new EventCompleter(event).run();
+                new EventCompleter(event).start();
                 i++;
             }
         }
